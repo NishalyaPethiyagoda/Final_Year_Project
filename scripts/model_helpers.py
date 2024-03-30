@@ -4,6 +4,7 @@ import numpy as np
 
 from keras.models import Model
 from keras.layers import Input, Conv2D, Lambda, UpSampling2D, ELU
+from keras.initializers import TruncatedNormal, Zeros
 
 from data_helpers import *
 
@@ -36,7 +37,7 @@ def conv_block(outputs, kernel, dilation, strides, filters, model_width):
     outputs = Lambda(
         lambda x: tf.pad(x, [[0, 0], [dilation, dilation], [dilation, dilation], [0, 0]], 'REFLECT'))(outputs)
     outputs = Conv2D(filters=filters * model_width, kernel_size=kernel, strides=strides, padding='valid',
-                     dilation_rate=dilation, activation='linear')(outputs)
+                     dilation_rate=dilation, activation='linear', kernel_initializer=TruncatedNormal(mean=0, stddev=1) )(outputs)
     return ELU()(outputs)
 
 
